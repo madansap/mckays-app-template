@@ -6,15 +6,24 @@ import { Input } from "@/components/ui/input"
 import { Send, Paperclip, Image, Video, ImageDown } from "lucide-react"
 import NextImage from "next/image"
 import Output from "./output"
+import { summarizeUrlAction } from "@/actions/summarize-action"
 
 export default function CreateInterface() {
   const [showOutput, setShowOutput] = useState(false)
   const [showButtons, setShowButtons] = useState(true)
   const [url, setUrl] = useState("")
+  const [summary, setSummary] = useState("")
 
-  const handleSend = () => {
-    setShowOutput(true)
+  const handleSend = async () => {
     setShowButtons(false)
+    console.log("URL to summarize:", url)
+    const result = await summarizeUrlAction(url)
+    if (result.isSuccess) {
+      setSummary(result.data)
+      setShowOutput(true)
+    } else {
+      console.error(result.message)
+    }
   }
 
   return (
@@ -57,7 +66,12 @@ export default function CreateInterface() {
             </div>
 
             {/* Conditionally render the Output component */}
-            {showOutput && <Output />}
+            {showOutput && (
+              <Output
+                title="The 9 UX Laws Every Designer Needs to Know"
+                content={summary}
+              />
+            )}
 
             {/* Conditionally render the action buttons */}
             {showButtons && (

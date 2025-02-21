@@ -4,33 +4,15 @@ import { useEffect, useState } from "react"
 import { Edit, Copy, Download } from "lucide-react"
 import Image from "next/image"
 
-const Output: React.FC = () => {
-  const title = "The 9 UX Laws Every Designer Needs to Know"
-  const subtitle =
-    "Essential principles for creating better software, websites, and user experiences."
+interface OutputProps {
+  title: string
+  content: string
+}
+
+const Output: React.FC<OutputProps> = ({ title, content }) => {
   const [displayedContent, setDisplayedContent] = useState("")
   const [showIcons, setShowIcons] = useState(false)
   const [isTyping, setIsTyping] = useState(true)
-
-  const content = `
-• **Law of Proximity**: Group related items together and separate unrelated ones for better information organization.
-
-• **Law of Similarity**: Use similar colors, shapes, or other visual cues for related elements to increase usability and reduce confusion.
-
-• **Hick's Law**: Limit the number of options presented to users to avoid overwhelming them and maintain a balanced, productive user experience.
-
-• **Miller's Law**: Keep the number of elements on each screen to a minimum and use search, filtering, and the Serial Position Effect to help users find and remember information.
-
-• **Serial Position Effect**: Place important elements at the beginning or end of a user flow, where they are more likely to be noticed and remembered.
-
-• **Aesthetic-Usability Effect**: Create visually appealing interfaces, as users will perceive them as more usable.
-
-• **Pareto Principle**: Focus on the 20% of factors that have the biggest impact on overall results in user research, usability testing, and design iterations.
-
-• **Jacob's Law**: Consider users' past experiences and expectations when designing new product experiences.
-
-• **Tesler's Law**: Accept the inherent complexity of applications and work to make them as simple and straightforward as possible.
-`
 
   useEffect(() => {
     let index = 0
@@ -68,7 +50,6 @@ const Output: React.FC = () => {
       >
         {title}
       </h2>
-      <h3 className="mb-3 text-xl font-medium text-gray-600">{subtitle}</h3>
       <p className="text-base text-gray-800">{displayedContent}</p>
 
       {/* Icons at the bottom */}
