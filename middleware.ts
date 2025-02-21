@@ -36,6 +36,11 @@ const handler = (auth: any, request: NextRequest) => {
     afterSignUpUrl: process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL
   })
 
+  // Allow access to the dashboard regardless of auth state
+  if (path === "/dashboard") {
+    return NextResponse.next()
+  }
+
   // Block /todo redirects
   if (path.startsWith("/todo")) {
     return NextResponse.redirect(new URL("/dashboard", request.url))
