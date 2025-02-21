@@ -16,16 +16,33 @@ const handler = (auth: any, request: NextRequest) => {
   console.log("Auth state:", {
     path,
     userId: auth.userId,
-    sessionId: auth.sessionId,
-  });
+    isAuthPath: authPaths.includes(path),
+    afterSignInUrl: process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL,
+    afterSignUpUrl: process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL
+  })
 
-  // Ensure Clerk session is fully established before redirecting
-  if (auth.userId) {
-    if ((path === "/" || authPaths.includes(path)) && auth.sessionId) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
-    }
+  // Block /todo redirects
+  if (path.startsWith("/todo")) {
+    return NextResponse.redirect(new URL("/dashboard", request.url))
   }
 
+  // Handle sign-up specifically
+  if (path.startsWith("/sign-up")) {
+    console.log("Sign-up path detected")
+    if (auth.userId) {
+      console.log("User is already authenticated, redirecting to dashboard")
+      return NextResponse.redirect(new URL("/dashboard", request.url))
+    }
+    console.log("Proceeding with sign-up")
+    return NextResponse.next() // Allow the sign-up process to continue
+  }
+
+  // Redirect authenticated users to dashboard from auth pages or root
+  if (auth.userId && (path === "/" || authPaths.includes(path))) {
+    return NextResponse.redirect(new URL("/dashboard", request.url))
+  }
+
+  // Handle public routes
   if (isPublic(path)) {
     return NextResponse.next();
   }
